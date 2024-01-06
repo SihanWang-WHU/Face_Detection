@@ -37,5 +37,3 @@ def detect_and_crop_faces(video_path):
 video_path = 'test.mp4'
 faces = detect_and_crop_faces(video_path)
 print(faces)
-
-# 'faces' now contains an array of face images
