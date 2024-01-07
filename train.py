@@ -45,11 +45,11 @@ def main():
     )
     lr_scheduler = torch.optim.lr_scheduler.StepLR(
         optimizer,
-        step_size=100,
+        step_size=500,
         gamma=0.5
     )
 
-    num_epochs = 2
+    num_epochs = 20
 
     for epoch in range(num_epochs):
         # train for one epoch, printing every 10 iterations

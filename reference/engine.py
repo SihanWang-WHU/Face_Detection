@@ -17,7 +17,7 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
 
     lr_scheduler = None
     if epoch == 0:
-        step_size = 100
+        step_size = 500
         gamma = 0.5
         lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
 

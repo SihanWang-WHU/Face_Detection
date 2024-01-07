@@ -71,7 +71,7 @@ def update_confusion_matrix(conf_matrix, targets, outputs, iou_threshold=0.5):
     return conf_matrix
 
 
-def evaluate(model, val_data_loader, device, conf_matrix, iou_threshold=0.5):
+def evaluate(model, val_data_loader, device, conf_matrix, iou_threshold=0.1):
     model.eval()  # Set the model to evaluation mode
     with torch.no_grad():
         for images, targets in val_data_loader:
