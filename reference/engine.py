@@ -18,7 +18,7 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
     lr_scheduler = None
     if epoch == 0:
         step_size = 100
-        gamma = 0.2
+        gamma = 0.5
         lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
 
     for images, targets in metric_logger.log_every(data_loader, print_freq, header):
@@ -71,7 +71,6 @@ def _get_iou_types(model):
 
 def evaluate(model, data_loader, device):
     n_threads = torch.get_num_threads()
-    # FIXME remove this and make paste_masks_in_image run on the GPU
     torch.set_num_threads(1)
     cpu_device = torch.device("cpu")
     model.eval()

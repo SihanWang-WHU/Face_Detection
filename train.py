@@ -4,7 +4,7 @@ import torch
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from model import get_model_instance_segmentation
-from reference.engine import train_one_epoch, evaluate
+from reference.engine import train_one_epoch
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
@@ -39,14 +39,14 @@ def main():
     params = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.SGD(
         params,
-        lr=0.0005,
+        lr=0.001,
         momentum=0.9,
         weight_decay=0.0005
     )
     lr_scheduler = torch.optim.lr_scheduler.StepLR(
         optimizer,
         step_size=100,
-        gamma=0.2
+        gamma=0.5
     )
 
     num_epochs = 2
@@ -56,8 +56,8 @@ def main():
         train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=10)
         # update the learning rate
         lr_scheduler.step()
-        # evaluate on the test dataset
-        evaluate(model, data_loader_test, device=device)
+    torch.save(model.state_dict(), 'model.pth')
+
 
 if __name__ == '__main__':
     main()
