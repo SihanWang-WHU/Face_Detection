@@ -11,7 +11,7 @@ device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 def main():
     num_classes = 2
     transform = transforms.Compose(
-        [transforms.Resize((224, 224)),
+        [transforms.Resize((256, 256)),
          transforms.ToTensor(),
          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
@@ -22,14 +22,14 @@ def main():
         dataset,
         batch_size=2,
         shuffle=True,
-        num_workers=4,
+        num_workers=0,
         collate_fn=my_collate_fn
     )
     data_loader_test = torch.utils.data.DataLoader(
         dataset_test,
         batch_size=2,
         shuffle=False,
-        num_workers=4,
+        num_workers=0,
         collate_fn=my_collate_fn
     )
 
@@ -39,17 +39,17 @@ def main():
     params = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.SGD(
         params,
-        lr=0.005,
+        lr=0.0005,
         momentum=0.9,
         weight_decay=0.0005
     )
     lr_scheduler = torch.optim.lr_scheduler.StepLR(
         optimizer,
-        step_size=3,
-        gamma=0.1
+        step_size=100,
+        gamma=0.2
     )
 
-    num_epochs = 50
+    num_epochs = 2
 
     for epoch in range(num_epochs):
         # train for one epoch, printing every 10 iterations
@@ -58,19 +58,6 @@ def main():
         lr_scheduler.step()
         # evaluate on the test dataset
         evaluate(model, data_loader_test, device=device)
-
-    # For Training
-    images, targets = next(iter(data_loader))
-    images = list(image for image in images)
-    targets = [{k: v for k, v in t.items()} for t in targets]
-    output = model(images, targets)  # Returns losses and detections
-    print(output)
-
-    # For inference
-    model.eval()
-    x = [torch.rand(3, 300, 400), torch.rand(3, 500, 400)]
-    predictions = model(x)  # Returns predictions
-    print(predictions[0])
 
 if __name__ == '__main__':
     main()

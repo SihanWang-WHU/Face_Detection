@@ -17,8 +17,8 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
 
     lr_scheduler = None
     if epoch == 0:
-        step_size = 10
-        gamma = 0.25
+        step_size = 100
+        gamma = 0.2
         lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
 
     for images, targets in metric_logger.log_every(data_loader, print_freq, header):

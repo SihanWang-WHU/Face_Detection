@@ -26,6 +26,7 @@ class WIDERFaceDataset(Dataset):
         self.transform = transform
         self.img_paths, self.labels = self.parse_wider_txt()
 
+    import os
 
     def parse_wider_txt(self):
         txt_path = os.path.join(self.data_root, 'wider_face_split', f'wider_face_{self.split}_bbx_gt.txt')
@@ -43,9 +44,16 @@ class WIDERFaceDataset(Dataset):
                 line = line.rstrip()
                 if file_name_line:
                     img_path = os.path.join(img_root, line)
-                    img_paths.append(img_path)
-                    file_name_line = False
-                    num_boxes_line = True
+                    if os.path.exists(img_path):  # Check if the image file exists
+                        img_paths.append(img_path)
+                        file_name_line = False
+                        num_boxes_line = True
+                    else:  # Skip to the next file name line if the image file does not exist
+                        file_name_line = True
+                        num_boxes_line = False
+                        box_annotation_line = False
+                        current_labels = []
+                        continue
                 elif num_boxes_line:
                     num_boxes = int(line)
                     num_boxes_line = False
@@ -55,7 +63,8 @@ class WIDERFaceDataset(Dataset):
                     line_values = line.split(" ")
                     current_labels.append([int(x) for x in line_values[:4]])
                     if box_counter >= num_boxes:
-                        labels.append(current_labels)
+                        if img_path in img_paths:  # Add labels only if the image path was added
+                            labels.append(current_labels)
                         current_labels = []
                         box_counter = 0
                         file_name_line = True
@@ -219,7 +228,7 @@ if __name__ == "__main__":
         [transforms.Resize((224, 224)),
          transforms.ToTensor(),
          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-    dataset = WIDERFaceDataset(data_root='./data', split='val', transform=transform)
+    dataset = WIDERFaceDataset(data_root='./data', split='train', transform=transform)
     data_loader = DataLoader(dataset, batch_size=2, shuffle=True, num_workers=1, collate_fn=my_collate_fn)
 
     # Get a batch of data
