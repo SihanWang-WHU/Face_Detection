@@ -41,7 +41,7 @@ of the WIDER Face dataset. Key features of this class include:
   to display images with their annotated bounding boxes. This tool aids in debugging 
   and provides a clearer understanding of the dataset.
 
-  ### 2.2 Model Introduction
+### 2.2 Model Introduction
 
 In designing this model for face detection, I chose the **Mask R-CNN architecture** with a **ResNet-50 backbone** and **Feature Pyramid Network (FPN)** for their distinct advantages.
 
